@@ -332,6 +332,16 @@ h1{letter-spacing:.04em}
 .mq-row.b .mq-i{font:400 clamp(.9rem,1.7vw,1.4rem)/1.4 'Michroma','Outfit',sans-serif;text-transform:uppercase;letter-spacing:.1em;color:transparent;-webkit-text-stroke:1px color-mix(in srgb,var(--mute) 75%,transparent)}
 .mq-row.b .mq-i:hover span{background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-stroke:0}
 @media (prefers-reduced-motion:reduce){.mq-i::after{animation:none}}
+
+/* ---------- hero: calmer, clearer reading area ---------- */
+.hero::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(90deg,color-mix(in srgb,var(--bg) 94%,transparent) 0%,color-mix(in srgb,var(--bg) 80%,transparent) 36%,transparent 68%)}
+h1 .o{-webkit-text-stroke-width:clamp(1.4px,.14vw,2px)}
+.lead{max-width:46ch;color:color-mix(in srgb,var(--ink) 80%,var(--mute))}
+@media (min-width:961px){h1{font-size:clamp(1.9rem,3.5vw,3.1rem)}}
+@media (max-width:960px){.hero::before{background:linear-gradient(0deg,color-mix(in srgb,var(--bg) 94%,transparent) 0%,color-mix(in srgb,var(--bg) 84%,transparent) 55%,transparent 85%)}}
+
+/* ---------- 3D scene calms down once the page is scrolled ---------- */
+body::after{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:var(--bg);opacity:calc(var(--bgdim,0)*.8);transition:opacity .35s ease}
 </style>
 </head>
 <body>
@@ -568,6 +578,15 @@ h1{letter-spacing:.04em}
     tr.forEach((t,i)=>{const w=t.scrollWidth/2,v=+t.dataset.v*(1+Math.abs(boost)*3)*slow[i];pos[i]+=(+t.dataset.d)*v*dt;pos[i]=((pos[i]%w)+w)%w;t.style.transform='translate3d('+(-pos[i])+'px,0,0)'});
     inn.style.transform='skewX('+(-boost*6).toFixed(2)+'deg)';requestAnimationFrame(tick)}
   requestAnimationFrame(tick);
+})();
+</script>
+<script>
+/* 0 at the very top (scene unchanged) -> 1 after ~half a screen of scrolling (scene dimmed) */
+(function(){
+  const root=document.documentElement;let tick=false;
+  const upd=()=>{tick=false;root.style.setProperty('--bgdim',Math.min(1,Math.max(0,scrollY/(innerHeight*.45))).toFixed(3))};
+  addEventListener('scroll',()=>{if(!tick){tick=true;requestAnimationFrame(upd)}},{passive:true});
+  addEventListener('resize',upd);upd();
 })();
 </script>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
